@@ -1,5 +1,5 @@
 class Node():
-    def __init__(self, key, next=None):
+    def __init__(self, key=None, next=None):
         self.key = key
         self.next = next
 
@@ -28,6 +28,16 @@ class LinkedList():
         k.next = self.head
         self.head = k
         return k
+
+    def __len__(self):
+        if self.head is None:
+            return 0
+        curr = self.head
+        counter = 1
+        while curr.next != None:
+            counter += 1
+            curr = curr.next
+        return counter
 
     def delete(self, k_key):
         if self.head is None:

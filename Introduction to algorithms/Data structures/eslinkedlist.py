@@ -1,12 +1,12 @@
-import data_structures
+from data_structures import LinkedList, Node
 import random
 
 def create_linkedlist(n):
-    head = linkedlist.Node(random.randint(0, 1000))
-    list = linkedlist.LinkedList(head)
+    head = Node(random.randint(0, 9999999))
+    list = LinkedList(head)
     current = head
     for i in range(1, n):
-        current.next = linkedlist.Node(random.randint(0, 1000))
+        current.next = Node(random.randint(0, 1000))
         current = current.next
     return list
 
@@ -54,9 +54,21 @@ def reverse_linkedlist(p):
     curr.next = nxt
     p.head = curr
 
+# A2
+def reverse_linkedlist_rec(p):
+    if p.next.next == None:
+        nxt = p.next
+        nxt.next = p
+        return nxt
+    nxt = p.next
+    new_head = reverse_linkedlist_rec(nxt)
+    nxt.next = p
+    p.next = None
+    return new_head
+
 # B
 def odd_even_list(p):
-    lk_odd, lk_even = linkedlist.LinkedList(p.head.next), linkedlist.LinkedList(p.head)
+    lk_odd, lk_even = LinkedList(p.head.next), LinkedList(p.head)
     odd, even = p.head.next, p.head
     while ((odd != None) and (even != None)):
         even.next = odd.next
@@ -99,11 +111,66 @@ def sort_linkedlist(p):
         to_arr[i-1].next = to_arr[i]
 
 
+# It's the best way to do this? Probably not
+# There are a lot of line of not understandable code? Yes
+# It work? Yes
+# So nice work Fdrik
+
+def merge(p1, p2):
+    if p1 == None:
+        return p2
+    if p2 == None:
+        return p1
+
+    curr_p1, curr_p2 = p1.head, p2.head
+    if curr_p1.key <= curr_p2.key:
+        new_list = LinkedList(Node(curr_p1.key))
+        curr_p1 = curr_p1.next
+    else:
+        new_list = LinkedList(Node(curr_p2.key))
+        curr_p2 = curr_p2.next
+    prev, curr = new_list.head, Node()
+    while ((curr_p1 != None) and (curr_p2 != None)):
+        if curr_p1.key <= curr_p2.key:
+            curr.key = curr_p1.key
+            curr_p1 = curr_p1.next
+        else:
+            curr.key = curr_p2.key
+            curr_p2 = curr_p2.next
+        prev.next = curr
+        prev = curr
+        curr = Node()
+    while curr_p1 != None:
+        curr.key = curr_p1.key
+        prev.next = curr
+        prev = curr
+        curr = Node()
+        curr_p1 = curr_p1.next
+    while curr_p2 != None:
+        curr.key = curr_p2.key
+        prev.next = curr
+        prev = curr
+        curr = Node()
+        curr_p2 = curr_p2.next
+    prev.next = None
+    return new_list
+
+def join_lists(a, start, end):
+    if start == end:
+        if a[start] != None:
+            return a[start]
+        return
+    mid = (start+end)//2
+    first_half = join_lists(a, start, mid)
+    second_half = join_lists(a, mid+1, end)
+    return merge(first_half, second_half)
+
+
 if __name__ == "__main__":
     my_linkedlist = create_linkedlist(10)
 
     # Test insertion
-    new_node = linkedlist.Node(random.randint(0, 1000))
+    new_node = Node(random.randint(0, 1000))
     print(f"Before: {my_linkedlist}\n")
     my_linkedlist.insert(new_node)
     print(f"After: {my_linkedlist}\n")
@@ -139,12 +206,19 @@ if __name__ == "__main__":
     print("ES 2 A: Controlla se la linkedlist è stata invertita correttamente:")
     print(f"\t{my_linkedlist}")
     reverse_linkedlist(my_linkedlist)
-    print(f"\t{my_linkedlist}\n")
+    print(f"\tNon rec: {my_linkedlist}\n")
+    new_head = reverse_linkedlist_rec(my_linkedlist.head)
+    my_linkedlist.head = new_head
+    print(f"\tRec: {my_linkedlist}\n")
 
     print("ES 2 B: Controlla se le linked list sono state create correttamente:")
-    print(f"\t{my_linkedlist}")
+    my_secondlinkedlist = create_linkedlist(11)
+    print(f"\t1){my_linkedlist}")
+    print(f"\t2){my_secondlinkedlist}\n")
     odd, even = odd_even_list(my_linkedlist)
-    print(f"\tDispari: {odd}\n\tPari: {even}\n")
+    odd_second, even_second = odd_even_list(my_secondlinkedlist)
+    print(f"\t1) Dispari: {odd}\n\t   Pari: {even}\n")
+    print(f"\t2) Dispari: {odd_second}\n\t   Pari: {even_second}\n")
 
     # Test ex 3
     print("ES 3 A: Controlla se la linkedlist è ordinata correttamente:")
@@ -158,5 +232,17 @@ if __name__ == "__main__":
         to_insert = input("Scrivi il numero da inserire: [n per uscire] ")
         if to_insert == "n":
             break
-        insert_sorted(my_linkedlist, linkedlist.Node(int(to_insert)))
+        insert_sorted(my_linkedlist, Node(int(to_insert)))
         print(f"\n\t{my_linkedlist}\n")
+
+    # Test merge sorted linkedlist
+    # Its a mergesort for list of linkedlist :D CHEEERS
+    listoflist = []
+    length_listoflist = 5
+    length_lists = 2
+    for i in range(length_listoflist):
+        my_list = create_linkedlist(length_lists)
+        sort_linkedlist(my_list)
+        listoflist += [my_list]
+    joined_list = join_lists(listoflist, 0, length_listoflist-1)
+    print(f"Joined linkedlist test: {joined_list}\nlength:  {len(joined_list)}")
