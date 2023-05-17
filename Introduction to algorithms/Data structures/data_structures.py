@@ -54,6 +54,30 @@ class LinkedList():
             prev = curr
             curr = curr.next
 
+class TreeNode(Node):
+    def __init__(self, key=None):
+        super().__init__(key)
+        self.right = None
+        self.left = None
+
+
+class Tree():
+    def __init__(self, node=None):
+        self.root = node
+
+    def __repr__(self):
+        return self.preorder_repr(self.root)
+
+    def preorder_repr(self, node, h=0):
+        if node == None:
+            return ""
+        repr = f"{' '*h}{node.key}\n"
+        repr += self.preorder_repr(node.right, h+1)
+        repr += self.preorder_repr(node.left, h+1)
+        return repr
+
+
+
 class Stack(LinkedList):
     """Stack witch use a linkedlist as base data structure"""
     def __init__(self, node=None):
