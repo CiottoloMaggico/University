@@ -1,10 +1,8 @@
 import sys
-import math
 
 def printer_controller():
     statues_left = int(sys.stdin.readline().strip())
     day, n_printers = 1, 1
-    sqrt_r = int(math.sqrt(statues_left))
     while n_printers * 2 < statues_left:
         n_printers *= 2
         day += 1
