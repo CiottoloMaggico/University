@@ -1,12 +1,12 @@
-from data_structures import LinkedList, Node
 import random
+from introduction_to_algorithms.data_structures.data_structures import LinkedList, Node
 
 def create_linkedlist(n):
-    head = Node(random.randint(0, 9999999))
+    head = Node(random.randint(0, 10))
     list = LinkedList(head)
     current = head
     for i in range(1, n):
-        current.next = Node(random.randint(0, 1000))
+        current.next = Node(random.randint(0, 10))
         current = current.next
     return list
 
